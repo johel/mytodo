@@ -1,0 +1,57 @@
+<section ng-controller="TodoController">
+	<h1>{{activeCount}}</h1>
+	<h1>{{completedCount}}</h1>
+	<section id="todoapp">
+		<header id="header">
+			<h1>Fazer</h1>
+			<form id="todo-form">
+				<input ng-model="todo.titulo" type="text"  id="new-todo" placeholder="O que voce precisa fazer?">
+				<input ng-model = "todo.tag" type="text" id="new-tag" placeholder="Adicione uma tag">
+				<input class="btn btn-default" type="submit" class="btn btn-default" value="Adicionar" ng-click="addTodo(todo)">
+			</form>
+
+		</header>
+		<section id="main">
+			<input ng-click="markAll()" id="toggle-all" type="checkbox">
+			<label for="toggle-all">Mark all as complete</label>
+			<ul id="todo-list">
+				<li ng-repeat = "todo in todos|filter:statusFilter" ng-class="{completed:todo.terminado, editing:todo === editedTodo}">
+					<div class="view">
+						<input class="toggle" type="checkbox" ng-model="todo.terminado">
+						<label ng-dblclick="edit(todo)">{{todo.titulo}} - tag:{{todo.tag}}</label>
+						<button class="destroy" ng-click="deleteTodo(todo)" ></button>
+					</div>
+					<form>
+						<input class="edit" ng-blur="saveEdits(todo, 'blur')"  ng-model="todo.titulo" todo-focus="todo===editedTodo" todo-escape="revertEdits(todo)" >
+					</form>
+				</li>
+			</ul>
+		</section>
+		<footer id="footer">
+			<span id="todo-count"><strong>contador</strong>
+			</span>
+			<ul id="filters">
+				<li>
+					<a ng-class = "{selected: status === ''}" href="#!/">All</a>
+				</li>
+				<li>
+					<a ng-class = "{selected: status === 'active'}" href="#!/active">Active</a> 
+				</li>
+				<li>
+					<a ng-class = "{selected: status === 'completed'}" href="#!/completed">Completed</a>
+				</li>
+			</ul>
+			<button ng-click="clearCompletedTodos()" ng-show="completedCount" id="clear-completed">Clear completed</button>
+		</footer>	
+	</section>
+	<footer id="info">
+		<p><strong>Clique duas vezes para editar</strong></p>
+		<p>Credits:
+			<a href="http://twitter.com/cburgdorf">Christoph Burgdorf</a>,
+			<a href="http://ericbidelman.com">Eric Bidelman</a>,
+			<a href="http://jacobmumm.com">Jacob Mumm</a> and
+			<a href="http://igorminar.com">Igor Minar</a>
+		</p>
+		<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+	</footer>
+</section>
