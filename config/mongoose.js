@@ -12,7 +12,8 @@ module.exports = function() {
 
 	// Load the application models 
 	require('../server/models/user.server.model');
-	console.log("cheguei");
+	require('../server/models/todo.server.model');
+	console.log("cheguei no config do mongoose");
 
 	// Return the Mongoose connection instance
 	return db;

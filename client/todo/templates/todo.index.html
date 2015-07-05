@@ -5,9 +5,9 @@
 		<header id="header">
 			<h1>Fazer</h1>
 			<form id="todo-form">
-				<input ng-model="todo.titulo" type="text"  id="new-todo" placeholder="O que voce precisa fazer?">
+				<input ng-model="todo.content" type="text"  id="new-todo" placeholder="O que voce precisa fazer?">
 				<input ng-model = "todo.tag" type="text" id="new-tag" placeholder="Adicione uma tag">
-				<input class="btn btn-default" type="submit" class="btn btn-default" value="Adicionar" ng-click="addTodo(todo)">
+				<input class="btn btn-default" type="submit" class="btn btn-default" ng-disabled="saving" value="Adicionar" ng-click="addTodo(todo)">
 			</form>
 
 		</header>
@@ -15,14 +15,14 @@
 			<input ng-click="markAll()" id="toggle-all" type="checkbox">
 			<label for="toggle-all">Mark all as complete</label>
 			<ul id="todo-list">
-				<li ng-repeat = "todo in todos|filter:statusFilter" ng-class="{completed:todo.terminado, editing:todo === editedTodo}">
+				<li ng-repeat = "todo in todos|filter:statusFilter" ng-class="{completed:todo.finished, editing:todo === editedTodo}">
 					<div class="view">
-						<input class="toggle" type="checkbox" ng-model="todo.terminado">
-						<label ng-dblclick="edit(todo)">{{todo.titulo}} - tag:{{todo.tag}}</label>
+						<input class="toggle" type="checkbox" ng-model="todo.finished">
+						<label ng-dblclick="edit(todo)">{{todo.content}} - tag:{{todo.tag}}</label>
 						<button class="destroy" ng-click="deleteTodo(todo)" ></button>
 					</div>
 					<form>
-						<input class="edit" ng-blur="saveEdits(todo, 'blur')"  ng-model="todo.titulo" todo-focus="todo===editedTodo" todo-escape="revertEdits(todo)" >
+						<input class="edit" ng-blur="saveEdits(todo, 'blur')"  ng-model="todo.content" todo-focus="todo===editedTodo" todo-escape="revertEdits(todo)" >
 					</form>
 				</li>
 			</ul>

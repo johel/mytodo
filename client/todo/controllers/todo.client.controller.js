@@ -1,48 +1,43 @@
-angular.module('todo').controller('TodoController',['$scope','$routeParams', function ($scope, $routeParams) {
+angular.module('todo').controller('TodoController',['$scope','$routeParams','Todo', function ($scope, $routeParams, Todo) {
 	
 		// Monitor the current route for changes and adjust the filter accordingly.
 	$scope.$on('$routeChangeSuccess', function () {
 		var status = $scope.status = $routeParams.status || '';
 
 		$scope.statusFilter = (status === 'active') ?
-			{ terminado: false } : (status === 'completed') ?
-			{ terminado: true } : undefined;
+			{ finished: false } : (status === 'completed') ?
+			{ finished: true } : undefined;
 	});
 
-	$scope.todos = 
-	[
-		{
-			titulo:"preciso fazer isso",
-			terminado: false,
-			tag:"C#"
-		},
-		{
-			titulo:"ler javascript design patterns",
-			terminado: false,
-			tag:"javascript"
-		},
-		{
-			titulo:"ver python challenge",
-			terminado: true,
-			tag:"python"
-		}
-	];
+	$scope.todos = [];
 
+	$scope.todos = Todo.get().success(function (data) {
+ 		$scope.todos = data;
+
+     });
 
 	$scope.$watch('todos', function () {
-		$scope.activeCount = $scope.todos.filter(function(item){return item.terminado===false;}).length;
+		$scope.activeCount = $scope.todos.filter(function(item){return item.finished===false;}).length;
 		$scope.completedCount = $scope.todos.length - $scope.activeCount;
 	}, true);
 
 
 	$scope.addTodo = function (todo) {
-		$scope.todos.push({
-			titulo:todo.titulo.trim(),
-			terminado: false,
-			tag:todo.tag
+		$scope.saving = true;
+		todo.finished = false;
+		Todo.insert(todo)
+		.then(function success() {
+			var newTodoCopy = JSON.parse(JSON.stringify(todo));
+			$scope.todos.push(newTodoCopy);
+			$scope.todo.content = "";
+			$scope.todo.tag="";
+		}, function error() {
+			alert("deu errado!");
+		})
+		.finally(function () {
+			$scope.saving = false;
 		});
-		$scope.todo.titulo = "";
-		$scope.todo.tag="";
+
 	};
 	
 	$scope.deleteTodo = function (todo) {
@@ -53,46 +48,46 @@ angular.module('todo').controller('TodoController',['$scope','$routeParams', fun
 	};
 
 	$scope.saveEdits = function (todo, event) {
-	// Blur events are automatically triggered after the form submit event.
-	// This does some unfortunate logic handling to prevent saving twice.
-	if (event === 'blur' && $scope.saveEvent === 'submit') {
-		$scope.saveEvent = null;
-		return;
-	}
+		// Blur events are automatically triggered after the form submit event.
+		// This does some unfortunate logic handling to prevent saving twice.
+		if (event === 'blur' && $scope.saveEvent === 'submit') {
+			$scope.saveEvent = null;
+			return;
+		}
 
-	$scope.saveEvent = event;
+		$scope.saveEvent = event;
 
-		// Todo edits were reverted-- don't save.
-		//note que o evento keydown da diretiva acontece primeiro
-	if ($scope.reverted) {
-		$scope.reverted = null;
-		return;
-	}
+			// Todo edits were reverted-- don't save.
+			//note que o evento keydown da diretiva acontece primeiro
+		if ($scope.reverted) {
+			$scope.reverted = null;
+			return;
+		}
 
-	todo.titulo = todo.titulo.trim();
-// se nao houve alteracao, retorna sem fazer nada
-	if (todo.titulo === $scope.originalTodo.titulo) {
-		$scope.editedTodo = null;
-		return;
-	}
-
-
-	$scope.editedTodo = null;
-	/*store[todo.title ? 'put' : 'delete'](todo)
-		.then(function success() {}, function error() {
-			todo.title = $scope.originalTodo.title;
-		})
-		.finally(function () {
+		todo.content = todo.content.trim();
+		// se nao houve alteracao, retorna sem fazer nada
+		if (todo.content === $scope.originalTodo.content) {
 			$scope.editedTodo = null;
-		});*/
-};
+			return;
+		}
 
-$scope.revertEdits = function (todo) {
-	$scope.todos[$scope.todos.indexOf(todo)] = $scope.originalTodo;
-	$scope.editedTodo = null;
-	$scope.originalTodo = null;
-	$scope.reverted = true;
-};
+
+		$scope.editedTodo = null;
+		/*store[todo.title ? 'put' : 'delete'](todo)
+			.then(function success() {}, function error() {
+				todo.title = $scope.originalTodo.title;
+			})
+			.finally(function () {
+				$scope.editedTodo = null;
+			});*/
+	};
+
+	$scope.revertEdits = function (todo) {
+		$scope.todos[$scope.todos.indexOf(todo)] = $scope.originalTodo;
+		$scope.editedTodo = null;
+		$scope.originalTodo = null;
+		$scope.reverted = true;
+	};
 
 	$scope.clearCompletedTodos = function () {
 		var todos = $scope.todos.concat(); //shallow copy
@@ -100,7 +95,7 @@ $scope.revertEdits = function (todo) {
 
 		for(var i=0;i<qtdTotal;i+=1){
 			var todo = todos[i];
-			if (todo.terminado) {
+			if (todo.finished) {
 				$scope.deleteTodo(todo)
 			};
 		}
@@ -109,12 +104,12 @@ $scope.revertEdits = function (todo) {
 	$scope.markAll = function () {
 		if($scope.activeCount===0) {
 			$scope.todos.forEach(function(el){
-				el.terminado=false;
+				el.finished=false;
 			})
 		}
 		else{
 			$scope.todos.forEach(function(el){
-			el.terminado=true;
+			el.finished=true;
 			})
 		}
 	};
@@ -127,21 +122,6 @@ $scope.revertEdits = function (todo) {
 		//ex: var object = angular.extend({}, object1, object2).
 		$scope.originalTodo = angular.extend({}, todo);
 	}
-
-	$scope.completeTodos = (function () {
-		return $scope.todos.filter(function (item) {
-			return item.terminado ===true;
-		})
-	})();
-
-		$scope.activeTodos = (function () {
-		return $scope.todos.filter(function (item) {
-			return item.terminado === false;
-		})
-	})();
-
-	$scope.qtdComplete = $scope.completeTodos.length;
-	$scope.qtdActive = $scope.activeTodos.length;
 	
 
 
