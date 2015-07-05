@@ -1,6 +1,6 @@
 //routes
 
-angular.module(mainApplicationModuleName).config(['$routeProvider',
+angular.module('todo').config(['$routeProvider',
   function($routeProvider) {
     'use strict';
 
@@ -13,6 +13,6 @@ angular.module(mainApplicationModuleName).config(['$routeProvider',
 			.when('/', routeConfig)
 			.when('/:status', routeConfig)
 			.otherwise({
-				redirectTo: 'https://www.facebook.com/'
+				redirectTo: 'https://www.facebook.com.br/'
 			});
   }]);

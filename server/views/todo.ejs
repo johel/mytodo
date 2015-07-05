@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="port" data-framework="angularjs">
+	<head>
+		<meta charset="utf-8">
+		<title><%= title %></title>
+		<link rel="stylesheet" href="/css/base.css">
+		<link rel="stylesheet" href="/css/index.css">
+		<!--
+	    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css">
+    	<link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap-theme.css">
+    	--> 	
+	</head>
+	<body>
+		<!-- Render AngularJS views  -->			
+		<section ng-view></section>
+		
+		<!-- Vendors-->
+		<!--
+		<script src="/lib/bootstrap/dist/css/bootstrap.js"> </script>
+		-->
+
+		<!--Angular Resources -->
+		<script src="/lib/angular/angular.js"></script>
+		<script src="/lib/angular-route/angular-route.js"></script>
+		<!-- <script src="/lib/angular-resource/angular-resource.js"></script> -->
+		<script src="/todo/todo.client.module.js"></script>
+
+
+
+		<!-- Controllers-->
+		<script src="/todo/controllers/todo.client.controller.js"></script>
+
+				<!-- Routes-->
+		<script src="/todo/config/todo.client.routes.js"></script>
+
+		<!-- Directives-->
+		<script src="/todo/directives/todoFocus.js"></script>
+		<script src="/todo/directives/todoEscape.js"></script>
+	</body>
+</html>

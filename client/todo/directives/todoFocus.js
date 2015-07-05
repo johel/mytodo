@@ -1,4 +1,4 @@
-angular.module('mytodo')
+angular.module('todo')
 .directive('todoFocus', function($timeout) {
 
   function link(scope, element, attrs) {

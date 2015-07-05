@@ -1,4 +1,4 @@
-angular.module('mytodo')
+angular.module('todo')
 .directive('todoEscape', function() {
 'use strict';
 

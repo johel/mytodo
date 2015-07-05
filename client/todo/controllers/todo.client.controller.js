@@ -1,4 +1,4 @@
-angular.module(mainApplicationModuleName).controller('TodoController',['$scope','$routeParams', function ($scope, $routeParams) {
+angular.module('todo').controller('TodoController',['$scope','$routeParams', function ($scope, $routeParams) {
 	
 		// Monitor the current route for changes and adjust the filter accordingly.
 	$scope.$on('$routeChangeSuccess', function () {
