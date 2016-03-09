@@ -75,15 +75,15 @@ exports.read = function(req, res) {
 exports.update = function(req, res) {
 	// Get the todo from the 'request' object
 	var todo = req.todo;
-
+	console.log("todo - update:", todo);
 	// Update the todo fields
-	todo.title = req.body.title;
 	todo.content = req.body.content;
 
 	// Try saving the updated todo
 	todo.save(function(err) {
 		if (err) {
 			// If an error occurs send the error message
+			console.log("todo - update:", error);
 			return res.status(400).send({
 				message: getErrorMessage(err)
 			});

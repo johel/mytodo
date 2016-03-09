@@ -28,5 +28,14 @@ var TodoSchema = new Schema({
 	}
 });
 
+TodoSchema.virtual('id').get(function(){
+    return this._id.toHexString();
+});
+
+// Ensure virtual fields are serialised.
+TodoSchema.set('toJSON', {
+    virtuals: true
+});
+
 // Create the 'Todo' model out of the 'TodoSchema'
 mongoose.model('Todo', TodoSchema);

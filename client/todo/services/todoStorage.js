@@ -15,11 +15,23 @@ angular.module('todo')
 		// hand off the localStorage adapter
 		return $http.get('/api')
 			.then(function () {
-				return $injector.get('api');
+				return $injector.get('Todo');
+				console.log("api esta presente")
 			}, function () {
 				console.log("api nao esta presente");
 				return $injector.get('localStorage');
 			});
+
+
+		// return $http.get('/api/todo')
+		// 	.then(function () {
+		// 		var result = $injector.get('Todo');
+		// 		console.log(result);
+		// 		return result;
+		// 	}, function () {
+		// 		console.log("api nao esta presente");
+		// 		return $injector.get('localStorage');
+		// 	});
 	})
 
 	.factory('Todo', function TodoFactory ($http) {
@@ -59,10 +71,11 @@ angular.module('todo')
 
 				return $http.delete('/api/todo/' + todo.id)
 					.then(function success() {
-						return store.todos;
-					}, function error() {
+						return true;
+					}, function error(error) {
+						console.log(error)
 						angular.copy(originalTodos, store.todos);
-						return originalTodos;
+						return false;
 					});
 			},
 
@@ -71,7 +84,18 @@ angular.module('todo')
 			},
 
 			insert: function (todo) {
-				return $http.post('/api/todo', JSON.stringify(todo));
+				var originalTodos = store.todos.slice(0);
+
+				return $http.post('/api/todo', todo)
+					.then(function success(resp) {
+						todo.id = resp.data.id;
+						store.todos.push(todo);
+						return store.todos;
+					}, function error() {
+						angular.copy(originalTodos, store.todos);
+						return store.todos;
+					});
+				// return $http.post('/api/todo', JSON.stringify(todo));
 			},
 
 			put: function (todo) {

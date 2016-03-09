@@ -14,6 +14,7 @@
 		<section id="main">
 			<input ng-click="markAll()" id="toggle-all" type="checkbox">
 			<label for="toggle-all">Mark all as complete</label>
+			<p>{{JSON.stringify(todos)}}</p>
 			<ul id="todo-list">
 				<li ng-repeat = "todo in todos|filter:statusFilter" ng-class="{completed:todo.finished, editing:todo === editedTodo}">
 					<div class="view">

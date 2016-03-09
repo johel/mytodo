@@ -1,23 +1,27 @@
-// Invoke 'strict' JavaScript mode
-'use strict';
+(function(angular){
 
-// Set the main application name
-var mainApplicationModuleName = 'mytodo';
+		// Invoke 'strict' JavaScript mode
+	'use strict';
 
-// Create the main application
-var mainApplicationModule = angular.module(mainApplicationModuleName, ['ngResource', 'ngRoute','users', 'home']);
+	// Set the main application name
+	var mainApplicationModuleName = 'mytodo';
 
-// Configure the hashbang URLs using the $locationProvider services 
-mainApplicationModule.config(['$locationProvider',
-	function($locationProvider) {
-		$locationProvider.hashPrefix('!');
-	}
-]);
+	// Create the main application
+	var mainApplicationModule = angular.module(mainApplicationModuleName, ['ngResource', 'ngRoute','users', 'home']);
 
-// Fix Facebook's OAuth bug
-if (window.location.hash === '#_=_') window.location.hash = '#!';
+	// Configure the hashbang URLs using the $locationProvider services 
+	mainApplicationModule.config(['$locationProvider',
+		function($locationProvider) {
+			$locationProvider.hashPrefix('!');
+		}
+	]);
 
-// Manually bootstrap the AngularJS application
-angular.element(document).ready(function() {
-	angular.bootstrap(document, [mainApplicationModuleName]);
-});
+	// Fix Facebook's OAuth bug
+	if (window.location.hash === '#_=_') window.location.hash = '#!';
+
+	// Manually bootstrap the AngularJS application
+	angular.element(document).ready(function() {
+		angular.bootstrap(document, [mainApplicationModuleName]);
+	});
+
+})(angular)

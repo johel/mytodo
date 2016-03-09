@@ -11,10 +11,10 @@ angular.module('todo').controller('TodoController',['$scope','$routeParams','Tod
 
 	$scope.todos = [];
 
-	$scope.todos = Todo.get().success(function (data) {
- 		$scope.todos = data;
-
-     });
+	Todo.get().then(function (resp) {
+						angular.copy(resp.data, Todo.todos);
+						$scope.todos = Todo.todos;
+					});
 
 	$scope.$watch('todos', function () {
 		$scope.activeCount = $scope.todos.filter(function(item){return item.finished===false;}).length;
@@ -23,27 +23,28 @@ angular.module('todo').controller('TodoController',['$scope','$routeParams','Tod
 
 
 	$scope.addTodo = function (todo) {
+		var newTodo = {};
+		angular.copy(todo, newTodo);
+
 		$scope.saving = true;
 		todo.finished = false;
-		Todo.insert(todo)
-		.then(function success() {
-			var newTodoCopy = JSON.parse(JSON.stringify(todo));
-			$scope.todos.push(newTodoCopy);
-			$scope.todo.content = "";
-			$scope.todo.tag="";
-		}, function error() {
-			alert("deu errado!");
-		})
-		.finally(function () {
-			$scope.saving = false;
-		});
+		Todo.insert(newTodo)
+			.then(function success() {
+				$scope.todo.content = "";
+				$scope.todo.tag = "";
+			}, function error() {
+				alert("deu errado!");
+			})
+			.finally(function () {
+				$scope.saving = false;
+			});
 
 	};
 	
 	$scope.deleteTodo = function (todo) {
 		var index = $scope.todos.indexOf(todo);
 		if(index > -1){
-			$scope.todos.splice(index,1);
+			Todo.delete(todo);
 		}
 	};
 
@@ -73,13 +74,13 @@ angular.module('todo').controller('TodoController',['$scope','$routeParams','Tod
 
 
 		$scope.editedTodo = null;
-		/*store[todo.title ? 'put' : 'delete'](todo)
+		Todo[todo.content ? 'put' : 'delete'](todo)
 			.then(function success() {}, function error() {
-				todo.title = $scope.originalTodo.title;
+				todo.content = $scope.originalTodo.content;
 			})
 			.finally(function () {
 				$scope.editedTodo = null;
-			});*/
+			});
 	};
 
 	$scope.revertEdits = function (todo) {
